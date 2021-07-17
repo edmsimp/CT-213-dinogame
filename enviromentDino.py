@@ -21,17 +21,23 @@ def get_image():
     myScreenshot = pyautogui.screenshot(region=(0,272, 960, 520))
     myScreenshot.save('screenshot.png')
     image = cv.imread('screenshot.png')
-    image = cv.cvtColor(image,cv.COLOR_BGR2GRAY)
+    print(image.shape)
+   # image = cv.cvtColor(image,cv.COLOR_BGR2GRAY)
+   # print(image.shape)
     rect, image = cv.threshold(image,120,255,cv.THRESH_BINARY)
-    cv.imshow('dino',image)
-    cv.waitKey(1)
+    print(image.shape)
+    #image = np.expand_dims(image, axis=0)
+   # cv.imshow('dino',image)
+   # cv.waitKey(1)
     return image
+
+im = get_image()
 
 class Dino(Env):
     def __init__(self):
         self.reward = 0
         self.action_space = Discrete(3) # HÁ TRÊS AÇÕES
-        self.observation_space = Box(low=0, high=255, shape=(SCREEN_HEIGHT, SCREEN_WIDTH, 3), dtype=np.uint8) # O ESPAÇO É UMA IMAGEM
+        self.observation_space = Box(low=0, high=255, shape=(960, 520, 3), dtype=np.uint8) # O ESPAÇO É UMA IMAGEM
         self.score = 0
     def step(self,action):
 
@@ -46,7 +52,7 @@ class Dino(Env):
             game.Running()
 
         time.sleep(0.15)
-        if game.gameOver == True: # Se o jogo deu game over faz:
+        if game.gameOver() == True: # Se o jogo deu game over faz:
 
             self.reward = -10 # RECOMPENSA RUIM, POIS ELE PERDEU O JOGO
 
@@ -77,3 +83,5 @@ class Dino(Env):
         #Outra forma de realizar bastava apertar a tecla espaço ou a tecla enter para reinicializar o jogo depois do gameover (Entretanto, essa é a forma mais rápida)
     def close(self):
         game.dinoGame.Quit()
+
+        
