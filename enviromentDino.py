@@ -45,8 +45,7 @@ class Dino(Env):
         elif action == 3:
             game.Running()
 
-        time.sleep(0.15)
-        if game.gameOver == True: # Se o jogo deu game over faz:
+        if game.gameOver() == True: # Se o jogo deu game over faz:
 
             self.reward = -10 # RECOMPENSA RUIM, POIS ELE PERDEU O JOGO
 
