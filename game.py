@@ -41,16 +41,12 @@ NUM_ACTIONS = 2
 def Jumping():
     webdriver.ActionChains(dinoGame.chrome).key_down(Keys.SPACE).perform()
     webdriver.ActionChains(dinoGame.chrome).key_up(Keys.SPACE).perform()
-    time.sleep(0.15)    
+     
 
 def Ducking():
     webdriver.ActionChains(dinoGame.chrome).key_down(Keys.DOWN).perform()
-    time.sleep(0.15) 
+   
     webdriver.ActionChains(dinoGame.chrome).key_up(Keys.DOWN).perform()   
-        
-def Running():
-    pass
-
 
 def gameOver():
     return dinoGame.chrome.execute_script("return Runner.instance_.crashed")

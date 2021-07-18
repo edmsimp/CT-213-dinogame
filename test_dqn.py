@@ -16,7 +16,6 @@ from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
 env = enviromentDino.Dino()
 
 space = env.observation_space.shape
-print(space)
 actions = env.action_space.n
 
 agent = Agent(space, actions)
