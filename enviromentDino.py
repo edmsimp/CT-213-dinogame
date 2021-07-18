@@ -21,10 +21,10 @@ def get_image():
     myScreenshot = pyautogui.screenshot(region=(0,272, 960, 248))
     myScreenshot.save('screenshot.png')
     image = cv.imread('screenshot.png')
-    image = cv.cvtColor(image,cv.COLOR_BGR2GRAY)
-    rect, image = cv.threshold(image,120,255,cv.THRESH_BINARY)
+    rect, image = cv.threshold(image,120,255,cv.THRESH_BINARY_INV)
     image = cv.erode(image,kernel=None,iterations=1)
     image = cv.dilate(image,kernel=None,iterations=1)
+    image = cv.resize(image, (SCREEN_HEIGHT, SCREEN_WIDTH), interpolation=cv.INTER_AREA)
     cv.imshow('dino',image)
 
     cv.waitKey(1)
