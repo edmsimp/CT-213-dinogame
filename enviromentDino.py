@@ -24,6 +24,7 @@ def get_image():
     image = cv.erode(image,kernel=None,iterations=1)
     image = cv.dilate(image,kernel=None,iterations=1)
     image = cv.resize(image, (SCREEN_HEIGHT, SCREEN_WIDTH), interpolation=cv.INTER_AREA)
+    # uncomment if you want to see the screenshots during the execution.
     # cv.imshow('dino',image)
     cv.waitKey(1)
 
@@ -35,7 +36,7 @@ class Dino(Env):
     """
     def __init__(self):
         """
-        Creates  a Chrome Dino Game enviroment.
+        Creates a Chrome Dino Game enviroment.
 
         """
         self.reward = 0
