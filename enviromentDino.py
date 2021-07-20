@@ -26,11 +26,6 @@ def get_image():
         rect, image = cv.threshold(image,120,255,cv.THRESH_BINARY_INV)
     image = cv.erode(image,kernel=None,iterations=1)
     image = cv.dilate(image,kernel=None,iterations=1)
-
- 
-    
-        
-
     # uncomment if you want to see the screenshots during the execution.
     image = cv.resize(image, (SCREEN_HEIGHT, SCREEN_WIDTH), interpolation=cv.INTER_AREA)
     
