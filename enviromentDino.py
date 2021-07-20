@@ -42,7 +42,7 @@ class Dino(Env):
 
         """
         self.reward = 0
-        self.action_space = Discrete(2) # HÁ TRÊS AÇÕES
+        self.action_space = Discrete(3) # HÁ TRÊS AÇÕES
         self.observation_space = Box(low=0, high=255, shape=(SCREEN_HEIGHT, SCREEN_WIDTH, 3), dtype=np.uint8) # O ESPAÇO É UMA IMAGEM
         self.score = 0
 
@@ -58,14 +58,14 @@ class Dino(Env):
         done = False # DONE SIGNIFICA QUE O JOGO ACABOU, E NO CASO, ELE SÓ ACABA SE DER GAME OVER
         self.reward = 1
         # SÃO TRÊS AÇÕES POSSÍVEIS, PULAR, ABAIXAR, OU CONTINUAR CORRENDO SEM REALIZAR NENHUMA OUTRA AÇÃO
-        if action == 1:
+        if action == 0:
             game.Jumping()
             self.reward = 0
-        # elif action == 1:
-        #     game.Ducking()
-        #     self.reward = 0
-        # elif action == 2:
-        #     game.Running()
+        elif action == 1:
+            game.Ducking()
+            self.reward = 0
+        elif action == 2:
+            game.Running()
         time.sleep(0.1)
         if game.gameOver() == True: # Se o jogo deu game over faz:
             self.reward = -10 # RECOMPENSA RUIM, POIS ELE PERDEU O JOGO

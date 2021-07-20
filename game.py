@@ -88,7 +88,7 @@ def restart():
     """
     return dinoGame.chrome.execute_script("Runner.instance_.restart();")
 
-def switchoffAcellerate():
+def noAccelerate():
     dinoGame.chrome.execute_script("Runner.instance_.config.ACCELERATION = 0") 
 
 def get_score():
@@ -100,7 +100,7 @@ def get_score():
 dinoGame = DinoGame()
 dinoGame.LinkDino()
 Jumping()
-switchoffAcellerate()
+#noAccelerate()
 
 
     
