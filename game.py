@@ -1,11 +1,8 @@
-from pyscreeze import GRAYSCALE_DEFAULT
-from selenium.webdriver.common import keys
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
-from utils import NUM_ACTIONS
-import random
-import time
 import numpy as np
+from tensorflow.python.ops.functional_ops import While
+
 
 class DinoGame:
     """
@@ -59,6 +56,11 @@ def Ducking():
     webdriver.ActionChains(dinoGame.chrome).key_down(Keys.DOWN).perform()   
     webdriver.ActionChains(dinoGame.chrome).key_up(Keys.DOWN).perform()   
 
+def Running():
+    """
+    Dino keep Running
+    """
+    pass
 def gameOver():
     """
     Returns wheter the Chrome Dino Game is over or not.
@@ -86,9 +88,19 @@ def restart():
     """
     return dinoGame.chrome.execute_script("Runner.instance_.restart();")
 
+def switchoffAcellerate():
+    dinoGame.chrome.execute_script("Runner.instance_.config.ACCELERATION = 0") 
+
+def get_score():
+    score = dinoGame.chrome.execute_script('return Runner.instance_.distanceMeter.digits;');
+    return int((''.join(score)))
+    
+
+
 dinoGame = DinoGame()
 dinoGame.LinkDino()
-    
-     
-        
+Jumping()
+switchoffAcellerate()
+
+
     

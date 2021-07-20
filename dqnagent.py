@@ -11,7 +11,7 @@ class Agent:
     """
     Represents a Deep Q-Networks (DQN) agent.
     """
-    def __init__(self, state_size, action_size, gamma=0.95, epsilon=0.5, epsilon_min=1e-7, epsilon_decay=0.9, learning_rate=2e-5, buffer_size=4098):
+    def __init__(self, state_size, action_size, gamma=0.99, epsilon=0.1, epsilon_min=0.0001, epsilon_decay=0.99, learning_rate=1e-4, buffer_size=50000):
         """
         Creates a Deep Q-Networks (DQN) agent.
 
