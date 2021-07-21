@@ -1,10 +1,11 @@
 import random
 import numpy as np
 from collections import deque
-from tensorflow.keras import models, layers, optimizers, activations, losses
-from rl.agents import DQNAgent
-from rl.memory import SequentialMemory
-from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
+from tensorflow.keras import models, layers, optimizers, activations, losses,Model
+import tensorflow as tf
+from tensorflow.keras.layers import Conv2D,Flatten,Lambda,Dense,concatenate,Add
+
+
 
 
 class Agent:
@@ -42,6 +43,7 @@ class Agent:
         self.epsilon_decay = epsilon_decay
         self.learning_rate = learning_rate
         self.model = self.make_model()
+        
 
     def make_model(self):
         """
@@ -50,18 +52,56 @@ class Agent:
         :return: action-value neural network.
         :rtype: Keras' model.
         """
-        # Todo: Uncomment the lines below CHECK
-        model = models.Sequential()
-        # Todo: implement Keras' model CHECK      
-        model.add(layers.Convolution2D(32, (8,8), strides=(4,4), activation=activations.relu, input_shape=(self.height, self.width, self.channels), padding="same"))
-        model.add(layers.Convolution2D(64, (4,4), strides=(2,2), activation=activations.relu, padding="same"))
-        model.add(layers.Convolution2D(64, (3,3), strides=(1,1), activation=activations.relu, padding="same"))
-        model.add(layers.Flatten())
-        model.add(layers.Dense(512, activation='relu'))
-        model.add(layers.Dense(256, activation='relu'))
-        model.add(layers.Dense(self.action_size, activation='linear'))
-        model.compile(loss=losses.mse, optimizer=optimizers.Adam(lr=self.learning_rate))        
-        model.summary()
+
+        """
+        DQN - SIMPLE MODEL NEURAL NETWORK - UN/COMMENT TO ENABLE/DISABLE DQN METHOD
+
+        """ 
+        # ----------------------------------------------------------------------------------------------------------
+        # model = models.Sequential()
+        # model.add(layers.Convolution2D(32, (8,8), strides=(4,4), activation=activations.relu, 
+        #     input_shape=(self.height, self.width, self.channels), padding="same"))
+        # model.add(layers.Convolution2D(64, (4,4), strides=(2,2), activation=activations.relu, padding="same"))
+        # model.add(layers.Convolution2D(64, (3,3), strides=(1,1), activation=activations.relu, padding="same"))
+        # model.add(layers.Flatten())
+        # model.add(layers.Dense(512, activation='relu'))
+        # model.add(layers.Dense(256, activation='relu'))
+        # model.add(layers.Dense(self.action_size, activation='linear'))
+        # model.compile(loss=losses.mse, optimizer=optimizers.Adam(lr=self.learning_rate))  
+        # model.summary()
+        # ----------------------------------------------------------------------------------------------------------
+
+        """
+        DQN DUELING - DQN DUELING MODEL NEURAL NETWORK UN/COMMENT TO ENABLE/DISABLE DQN METHOD
+
+        """      
+        # ----------------------------------------------------------------------------------------------------------
+        ## Create Neural Network Convolucional
+        input_image = layers.Input(shape=(self.height, self.width, self.channels))
+
+        nnConv = Conv2D(32, (8,8), strides=(4,4), activation='relu')(input_image)
+        nnConv = Conv2D(64, (4,4), strides=(2,2), activation='relu')(nnConv)
+        nnConv = Conv2D(64, (3,3), strides=(1,1), activation='relu')(nnConv)
+        nnConv = Flatten()(nnConv)
+        nnConv = Dense(512,activation='relu')(nnConv)
+        nnConv = Dense(256,activation='relu')(nnConv)
+        ## Create Layer for state value
+        StateValue = Dense(1)(nnConv)
+        StateValue = Lambda(lambda s: tf.expand_dims(s[:, 0], -1),
+                       output_shape=(self.action_size,))(StateValue)
+
+        ## Create Layer for Advantage
+        Advantage = Dense(self.action_size)(nnConv)
+        Advantage = Lambda(lambda a: a[:, :] - tf.math.reduce_mean(a[:, :], axis=1,keepdims=True),
+                           output_shape=(self.action_size,))(Advantage)
+
+        ## Concatenate the two layers into one
+        qValue = Add()([StateValue, Advantage])
+        #qValue = concatenate([StateValue,Advantage], name='sum')
+
+        model = Model(inputs=input_image, outputs=qValue)
+        model.compile(loss=losses.mse, optimizer=optimizers.Adam(lr=self.learning_rate)) 
+        # ----------------------------------------------------------------------------------------------------------
         return model
 
     def act(self, state):
@@ -73,8 +113,7 @@ class Agent:
         :return: chosen action.
         :rtype: int.
         """
-        # Todo: implement epsilon-greey action selection. CHECK
-
+        
         action_values = self.model.predict(state)
         greedy_action = np.argmax(action_values)
         m = np.random.rand()
@@ -134,6 +173,7 @@ class Agent:
         :param name: model's name.
         :type name: str.
         """
+        
         self.model.load_weights(name)
 
     def save(self, name):
