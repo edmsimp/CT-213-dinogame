@@ -2,6 +2,8 @@ import os
 import gym
 import enviromentDino
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from dqnagent import Agent
 from doubledqnagent import DoubleAgent
@@ -22,10 +24,12 @@ tf.compat.v1.disable_eager_execution()
 env = enviromentDino.Dino()
 state_size = env.observation_space.shape
 action_size = env.action_space.n
+batch_size = 32  # batch size used for the experience replay
 
 # Creating the agent
-agent_type = "dqn"
-# agent_type = "ddqn"
+# agent_type = "dqn"
+agent_type = "ddqn"
+
 if agent_type == "dqn":
     agent = Agent(state_size, action_size)
     fig_name = 'dqn_training'
@@ -40,7 +44,7 @@ if os.path.exists("dino_game.h5"):
 else:
     print('No weights found from previous learning session.')
 done = False
-batch_size = 32  # batch size used for the experience replay
+
 return_history = []
 
 for episodes in range(1, NUM_EPISODES + 1):
