@@ -17,7 +17,7 @@ def get_image():
     :return: preprocessed screenshot.
     :rtype: 3 dimensional NumPy array.
     """
-    myScreenshot = pyautogui.screenshot(region=(0,272, 960, 248))
+    myScreenshot = pyautogui.screenshot(region=(0,372, 960, 248))
     myScreenshot.save('screenshot.png')
     image = cv.imread('screenshot.png')
     average = np.mean(image)
