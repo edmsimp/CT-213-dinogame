@@ -4,6 +4,7 @@ import enviromentDino
 import numpy as np
 import matplotlib.pyplot as plt
 from dqnagent import Agent
+from doubledqnagent import DoubleAgent
 import tensorflow as tf
 
 NUM_EPISODES = 30000  # Number of episodes used for training
@@ -22,13 +23,19 @@ env = enviromentDino.Dino()
 state_size = env.observation_space.shape
 action_size = env.action_space.n
 
-# Creating the DQN agent
-agent = Agent(state_size, action_size)
+# Creating the agent
+agent_type = "dqn"
+# agent_type = "ddqn"
+if agent_type == "dqn":
+    agent = Agent(state_size, action_size)
+    fig_name = 'dqn_training'
+elif agent_type == "ddqn":
+    agent = DoubleAgent(state_size, action_size, batch_size)
+    fig_name = 'ddqn_training'
 
 # Checking if weights from previous learning session exists
 if os.path.exists("dino_game.h5"):
     print('Loading weights from previous learning session.')
-    print('GOOOOOD')
     agent.load("dino_game.h5")
 else:
     print('No weights found from previous learning session.')
@@ -62,18 +69,22 @@ for episodes in range(1, NUM_EPISODES + 1):
                   .format(episodes, NUM_EPISODES, time, cumulative_reward, agent.epsilon))
             break
         # We only update the policy if we already have enough experience in memory
-        if len(agent.replay_buffer) > 2 * batch_size:
-            loss = agent.replay(batch_size)
+        if agent_type == "dqn":
+            if len(agent.replay_buffer) > 2 * batch_size:
+                loss = agent.replay(batch_size)
+        elif agent_type == "ddqn":
+            if agent.memory.mem_cntr > 2 * batch_size:
+                loss = agent.replay(batch_size)
     return_history.append(cumulative_reward)
     agent.update_epsilon()
-    # Every 10 episodes, update the plot for training monitoring
+    # Every 20 episodes, update the plot for training monitoring
     if episodes % 20 == 0:
         plt.plot(return_history, 'b')
         plt.xlabel('Episode')
         plt.ylabel('Return')
         plt.show(block=False)
         plt.pause(0.1)
-        plt.savefig('dqn_training.' + fig_format, fig_format=fig_format)
+        plt.savefig(fig_name + fig_format, fig_format=fig_format)
         # Saving the model to disk
         agent.save("dino_game.h5")
 plt.pause(1.0)

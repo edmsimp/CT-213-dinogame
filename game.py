@@ -11,7 +11,6 @@ class DinoGame:
     def __init__(self):
         """
         Creates a Chrome Dino Game.
-
         """
         # ATENÇÃO!!! MUDE O DIRETÓRIO CASO NÃO RODE!
         self.driver_path = "chromedriver.exe"        
@@ -26,7 +25,6 @@ class DinoGame:
     def LinkDino(self):
         """
         Acess the Chrome Dino Game website.
-
         """
         try:
             self.chrome.get('chrome://dino/')
@@ -36,14 +34,12 @@ class DinoGame:
     def Quit(self):
         """
         Quit the Chrome Dino Game website.
-
         """
         self.chrome.quit()
 
 def Jumping():
     """
     Represents the jump action in the Chrome Dino Game.
-
     """
     webdriver.ActionChains(dinoGame.chrome).key_down(Keys.SPACE).perform()
     webdriver.ActionChains(dinoGame.chrome).key_up(Keys.SPACE).perform()     
@@ -51,7 +47,6 @@ def Jumping():
 def Ducking():
     """
     Represents the duck action in the Chrome Dino Game.
-
     """
     webdriver.ActionChains(dinoGame.chrome).key_down(Keys.DOWN).perform()   
     webdriver.ActionChains(dinoGame.chrome).key_up(Keys.DOWN).perform()   
@@ -64,7 +59,6 @@ def Running():
 def gameOver():
     """
     Returns wheter the Chrome Dino Game is over or not.
-
     :return: wheter the Chrome Dino Game is over or not.
     :rtype: boolean.
     """
@@ -73,7 +67,6 @@ def gameOver():
 def velocity():
     """
     Returns the Chrome Dino Game velocity.
-
     :return: Chrome Dino Game velocity.
     :rtype: float.
     """
@@ -82,13 +75,12 @@ def velocity():
 def restart():
     """
     Restarts the Chrome Dino Game.
-
     :return: Restart action.
     :rtype: script.
     """
     return dinoGame.chrome.execute_script("Runner.instance_.restart();")
 
-def switchoffAcellerate():
+def noAccelerate():
     dinoGame.chrome.execute_script("Runner.instance_.config.ACCELERATION = 0") 
 
 def get_score():
@@ -100,7 +92,7 @@ def get_score():
 dinoGame = DinoGame()
 dinoGame.LinkDino()
 Jumping()
-switchoffAcellerate()
+#noAccelerate()
 
 
     

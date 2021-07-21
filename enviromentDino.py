@@ -13,11 +13,10 @@ import pyautogui
 def get_image():
     """
     Makes a screenshot of the dino's window and preprocess it.
-
     :return: preprocessed screenshot.
     :rtype: 3 dimensional NumPy array.
     """
-    myScreenshot = pyautogui.screenshot(region=(0,372, 960, 248))
+    myScreenshot = pyautogui.screenshot(region=(0,272, 960, 248))
     myScreenshot.save('screenshot.png')
     image = cv.imread('screenshot.png')
     average = np.mean(image)
@@ -39,17 +38,15 @@ class Dino(Env):
     def __init__(self):
         """
         Creates a Chrome Dino Game enviroment.
-
         """
         self.reward = 0
-        self.action_space = Discrete(2) # HÁ TRÊS AÇÕES
+        self.action_space = Discrete(3) # HÁ TRÊS AÇÕES
         self.observation_space = Box(low=0, high=255, shape=(SCREEN_HEIGHT, SCREEN_WIDTH, 3), dtype=np.uint8) # O ESPAÇO É UMA IMAGEM
         self.score = 0
 
     def step(self,action):
         """
         Represents a step in the enviroment.
-
         :param action: action taken in that step.
         :type action: int.
         :return: screenshot after the step, reward after the step, boolean to know if the game is over, debugging tool.
@@ -58,14 +55,14 @@ class Dino(Env):
         done = False # DONE SIGNIFICA QUE O JOGO ACABOU, E NO CASO, ELE SÓ ACABA SE DER GAME OVER
         self.reward = 1
         # SÃO TRÊS AÇÕES POSSÍVEIS, PULAR, ABAIXAR, OU CONTINUAR CORRENDO SEM REALIZAR NENHUMA OUTRA AÇÃO
-        if action == 1:
+        if action == 0:
             game.Jumping()
             self.reward = 0
-        # elif action == 1:
-        #     game.Ducking()
-        #     self.reward = 0
-        # elif action == 2:
-        #     game.Running()
+        elif action == 1:
+            game.Ducking()
+            self.reward = 0
+        elif action == 2:
+            game.Running()
         time.sleep(0.1)
         if game.gameOver() == True: # Se o jogo deu game over faz:
             self.reward = -10 # RECOMPENSA RUIM, POIS ELE PERDEU O JOGO
@@ -82,7 +79,6 @@ class Dino(Env):
     def render(self, mode='rgb_array'):
         """
         Render the enviroment.
-
         :param mode: render mode.
         :type mode: string.
         :return: enviroment image.
@@ -94,7 +90,6 @@ class Dino(Env):
     def reset(self):
         """
         Resets the enviroment.
-
         :return: enviroment image.
         :rtype: 3 dimensional NumPy array, int, boolean, dict.
         """
@@ -105,6 +100,5 @@ class Dino(Env):
     def close(self):
         """
         Closes the enviroment.
-
         """
         game.dinoGame.Quit()
